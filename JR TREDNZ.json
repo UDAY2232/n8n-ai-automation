@@ -1,0 +1,423 @@
+{
+  "name": "JR TREDNZ",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 10
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -464,
+        80
+      ],
+      "id": "c6e3e5e3-327f-4884-b24e-a6800ea37fd5",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "https://trends.google.com/trending/rss?geo=US",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -208,
+        80
+      ],
+      "id": "fb2786c1-54ae-4a7f-975f-3adbc8a8353c",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.xml",
+      "typeVersion": 1,
+      "position": [
+        48,
+        80
+      ],
+      "id": "9fbc36c0-18c0-40b6-947a-1995b5890afe",
+      "name": "XML"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e3edc795-fa5f-4f79-89e6-042f81296730",
+              "name": "trend",
+              "value": "=Name → trend Value → {{$json[\"rss\"][\"channel\"][\"item\"][0][\"title\"]}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        288,
+        80
+      ],
+      "id": "cb62ed5f-131b-43f8-871c-3935ee3e04c7",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Create a viral 30 second YouTube Shorts script\nabout this trending topic:\n\n{{$json[\"trend\"]}}\n\nRules:\nHook in first 3 seconds\nMaximum 80 words\nSimple English\nEnd with curiosity.",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        576,
+        80
+      ],
+      "id": "0d8fbc6d-e056-4ca6-b173-33fbe2bbd762",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "deepseek/deepseek-chat",
+          "mode": "list",
+          "cachedResultName": "deepseek/deepseek-chat"
+        },
+        "responsesApiEnabled": false,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        640,
+        240
+      ],
+      "id": "410aacf9-bfb5-4a47-9287-8612b894020c",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "yiJNJM7LTT6Pmf6W",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.elevenlabs.io/v1/text-to-speech/EXAVITQu4vr4xnSDxMaL",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "xi-api-key",
+              "value": "sk_d20f14ecbbbcc7d2fe99adaf5549f2d8c56e57e037b1bbf9"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text",
+              "value": "={{$json.text}}"
+            },
+            {
+              "name": "model_id",
+              "value": "eleven_multilingual_v2"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        512,
+        400
+      ],
+      "id": "93feba68-0fdf-4ab0-84a1-087cd7752176",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.creatomate.com/v2/renders",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 91b0e8ccd5f94cce8211ebe9d752dcd0a8a86d984b6caaf30ba1162d0a3565c13ca379f2307bd6fa7c52f72a55a28085"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "template_id",
+              "value": "bcda3cf2-d387-46c7-9a91-5daa83aacad4"
+            },
+            {
+              "name": "modifications.script",
+              "value": "={{$json.text}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1024,
+        80
+      ],
+      "id": "949dee9a-1e02-4186-bb40-e7bee5a73918",
+      "name": "HTTP Request2"
+    },
+    {
+      "parameters": {
+        "amount": 20
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1296,
+        80
+      ],
+      "id": "53c18f6d-165d-4f00-bb62-f098b88705c1",
+      "name": "Wait",
+      "webhookId": "0992a79d-98ed-421c-a2c2-c9544fbda9c2"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.creatomate.com/v2/renders/{{$json.id}}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 91b0e8ccd5f94cce8211ebe9d752dcd0a8a86d984b6caaf30ba1162d0a3565c13ca379f2307bd6fa7c52f72a55a28085"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1360,
+        352
+      ],
+      "id": "9440cb77-08e1-4215-ba88-b23b2f0a2bbb",
+      "name": "HTTP Request3"
+    },
+    {
+      "parameters": {
+        "url": "={{$json.url}}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1552,
+        352
+      ],
+      "id": "523b7d02-3da7-4d1d-a8f1-9a428b15d97d",
+      "name": "HTTP Request4"
+    },
+    {
+      "parameters": {
+        "resource": "video",
+        "operation": "upload",
+        "title": "={{$json.text.slice(0,60)}}",
+        "regionCode": "IN",
+        "categoryId": "24",
+        "options": {
+          "description": "AI Generated Shorts  #shorts #ai #viral",
+          "privacyStatus": "public"
+        }
+      },
+      "type": "n8n-nodes-base.youTube",
+      "typeVersion": 1,
+      "position": [
+        992,
+        608
+      ],
+      "id": "0aada0b6-3d61-4889-8e08-d9680d365cf9",
+      "name": "Upload a video1",
+      "credentials": {
+        "youTubeOAuth2Api": {
+          "id": "bRvVzekNGokLTLlN",
+          "name": "YouTube account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "XML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "XML": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        []
+      ]
+    },
+    "HTTP Request2": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request3": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request4": {
+      "main": [
+        [
+          {
+            "node": "Upload a video1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "40c0b91f-9a07-46af-8728-c848ee3cd2b7",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8fa4d4e7448f697e5849724839bde2cbcf1113c6089b2bd16b5b840187ccce36"
+  },
+  "id": "FRy09GDWNjoh1YRl",
+  "tags": []
+}
