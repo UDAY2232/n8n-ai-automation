@@ -24,6 +24,11 @@ This project is an automated workflow built using n8n that:
 ## 📂 Workflow
 Import the JSON file into n8n to run this workflow.
 
+## 🧩 Workflow Architecture
+
+![Workflow](assets/workflow.png)
+
+
 ## 🌐 Live Demo
 (Will be added after deployment)
 
